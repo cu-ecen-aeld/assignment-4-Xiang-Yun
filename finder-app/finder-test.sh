@@ -8,7 +8,7 @@ set -u
 NUMFILES=10
 WRITESTR=AELD_IS_FUN
 WRITEDIR=/tmp/aeld-data
-username=$(cat conf/username.txt)
+username=$(cat /etc/finder-app/conf/username.txt)
 
 if [ $# -lt 3 ]
 then
@@ -54,7 +54,7 @@ fi
 
 for i in $( seq 1 $NUMFILES)
 do
-	./writer.sh "$WRITEDIR/${username}$i.txt" "$WRITESTR"
+	./writer "$WRITEDIR/${username}$i.txt" "$WRITESTR"
 done
 
 OUTPUTSTRING=$(./finder.sh "$WRITEDIR" "$WRITESTR")
@@ -71,3 +71,25 @@ else
 	echo "failed: expected  ${MATCHSTR} in ${OUTPUTSTRING} but instead found"
 	exit 1
 fi
+
+
+
+
+# Ensure all necessary executables and scripts are in PATH
+if ! command -v finder.sh > /dev/null; then
+    echo "finder.sh not found in PATH"
+    exit 1
+fi
+
+if ! command -v writer > /dev/null; then
+    echo "writer not found in PATH"
+    exit 1
+fi
+
+# Create the output file
+OUTPUT_FILE="/tmp/assignment4-result.txt"
+echo "Running finder.sh and writing output to ${OUTPUT_FILE}"
+
+/usr/bin/finder.sh > ${OUTPUT_FILE}
+
+echo "Finder script execution completed. Output written to ${OUTPUT_FILE}"
